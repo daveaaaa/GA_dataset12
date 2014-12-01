@@ -96,9 +96,9 @@ public class Selection extends Thread {
 
             for (int i = 0; i != competitors.length; i++) {
                 if ((rules[competitors[i]].getFitness()== bestFitness) && (winnerID > 0)){
-                    if(rules[winnerID].getWildCardCount() >= rules[competitors[i]].getWildCardCount()){
-                        winnerID = i;
-                    }
+//                    if(rules[winnerID].getWildCardCount() >= rules[competitors[i]].getWildCardCount()){
+//                        winnerID = i;
+//                    }
                 } else if (rules[competitors[i]].getFitness() >= bestFitness) {
                     bestFitness = rules[competitors[i]].getFitness();
                     winnerID = competitors[i];

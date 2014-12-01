@@ -75,12 +75,12 @@ public class MultiThreadAI {
 
     private static void initVariables() {
         trainingSetPercent = 0.8;
-        populationSize = 100;
-        mutationRate = 0.1;
+        populationSize = 200;
+        mutationRate = 0.3;
         //crossOverPoint = trainingSet[0].getGene().length / 2;
         randomCrossover = true;
         competitorSize = 2;
-        maxGenerations = 3000;
+        maxGenerations = 1000;
         ruleSetSize = 20;
         crossoverPercentage = 0.7;
         maxRuns = 20;
@@ -98,7 +98,7 @@ public class MultiThreadAI {
     }
 
     private static void increaseRuleSet() {
-        ruleSetSize = 2;
+        ruleSetSize = 20;
         for (int i = 0; i != 19; i++) {
             long starttime = System.currentTimeMillis();
             doTest("IncreaseRuleSetSize", "Test" + i);
