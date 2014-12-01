@@ -140,7 +140,8 @@ public class Fitness extends Thread {
                         if (rule.isMatch(dataPoint)) {
                             if (rule.getClassification() == dataPoint.getClassification()) {
                                 value++;
-                            
+                            } else {
+                                value -= 10;
                             }
                             break;
                         }

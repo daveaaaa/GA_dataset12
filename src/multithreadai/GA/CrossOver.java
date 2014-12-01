@@ -49,11 +49,10 @@ public class CrossOver extends Thread {
             }
         }
 
-        
         for (int i = crossoverNumber; i != population.length; i++) {
             newGeneration[i] = population[rand.nextInt(population.length)].createClone();
         }
-        
+
         return newGeneration;
     }
 
@@ -63,7 +62,7 @@ public class CrossOver extends Thread {
 
         for (int i = 0; i != size; i++) {
             if (randomCrossover) {
-                int randomCrossoverPoint = rand.nextInt(geneSize);
+                int randomCrossoverPoint = rand.nextInt(population[0].getRulesAsInt().length);
                 crossoverWorkers[i] = new CrossOverWorker(this, randomCrossoverPoint);
             } else {
                 crossoverWorkers[i] = new CrossOverWorker(this, crossOverPoint);
@@ -80,7 +79,7 @@ public class CrossOver extends Thread {
 
     public synchronized void addChildren(ArrayList<RuleSet> children) {
         int i = 0;
-        while ((i != children.size()) & (childCount < crossoverNumber)){
+        while ((i != children.size()) & (childCount < crossoverNumber)) {
             newGeneration[childCount] = children.get(i);
             newGeneration[childCount].setFitnessChanged(true);
             childCount++;
@@ -118,24 +117,24 @@ public class CrossOver extends Thread {
         }
 
         private void getChildren(RuleSet parent1, RuleSet parent2) {
-            Individual[] child1Gene = new Individual[parent1.getRules().length];
-            Individual[] child2Gene = new Individual[parent1.getRules().length];
+            int[] parent1Gene = parent1.getRulesAsInt();
+            int[] parent2Gene = parent2.getRulesAsInt();
+
+            int[] child1Gene = new int[parent1Gene.length];
+            int[] child2Gene = new int[parent1Gene.length];
 
             for (int i = 0; i != ownCrossoverPoint; i++) {
-                child1Gene[i] = parent1.getRules()[i];
-                child2Gene[i] = parent2.getRules()[i];
+                child1Gene[i] = parent1Gene[i];
+                child2Gene[i] = parent2Gene[i];
             }
 
-            for (int i = ownCrossoverPoint; i != parent1.getRules().length; i++) {
-                child1Gene[i] = parent2.getRules()[i];
-                child2Gene[i] = parent1.getRules()[i];
+            for (int i = ownCrossoverPoint; i != parent1Gene.length; i++) {
+                child1Gene[i] = parent2Gene[i];
+                child2Gene[i] = parent1Gene[i];
             }
 
-            RuleSet child1 = new RuleSet(child1Gene);
-            RuleSet child2 = new RuleSet(child2Gene);
-
-            Fitness.setFitness(child1);
-            Fitness.setFitness(child2);
+            RuleSet child1 = new RuleSet(child1Gene, parent1.getRules()[0].getGene().length, parent1.getRules().length);
+            RuleSet child2 = new RuleSet(child2Gene, parent1.getRules()[0].getGene().length, parent1.getRules().length);
 
             children.add(child1);
             children.add(child2);

@@ -28,6 +28,24 @@ public class RuleSet {
         fitnessChanged = true;
     }
 
+    public RuleSet(int[] rules, int geneLength, int ruleCount) {
+        this.ruleSet = new Individual[ruleCount];
+        int i = 0;
+        int ruleSetCount = 0;
+        
+        while (i != rules.length) {
+            int[] newGene = new int[geneLength];
+
+            for (int j = 0; j != geneLength; j++) {
+                newGene[j] = rules[i];
+                i++;
+            }
+            ruleSet[ruleSetCount] = new Individual(newGene, rules[i]);
+            ruleSetCount++;
+            i++;
+        }
+    }
+
     public RuleSet(int ruleSetSize, int geneSize) {
         ruleSet = new Individual[ruleSetSize];
 
@@ -44,6 +62,40 @@ public class RuleSet {
 
     public Individual[] getRules() {
         return ruleSet;
+    }
+
+    public int[] getRulesAsInt() {
+
+        int[] rules = new int[ruleSet.length + (ruleSet.length * ruleSet[0].getGene().length)];
+
+        int i = 0;
+        for (Individual rule : ruleSet) {
+            for (int j = 0; j != rule.getGene().length; j++) {
+                rules[i] = rule.getGene()[j];
+                i++;
+            }
+            rules[i] = rule.getClassification();
+            i++;
+        }
+
+        return rules;
+    }
+
+    public void setRulesAsInt(int[] rules) {
+        int i = 0;
+        for (Individual rule : ruleSet) {
+            int[] newGene = new int[rule.getGene().length];
+            for (int j = 0; j != rule.getGene().length; j++) {
+                newGene[j] = rules[i];
+                i++;
+            }
+            rule.setGene(newGene);
+            rule.setClassification(rules[i]);
+            i++;
+        }
+
+        fitnessChanged = true;
+
     }
 
     public void setFitness(int fitness) {

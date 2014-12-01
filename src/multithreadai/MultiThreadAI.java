@@ -99,13 +99,12 @@ public class MultiThreadAI {
 
     private static void increaseRuleSet() {
         ruleSetSize = 2;
-        crossOverPoint = ruleSetSize / 2;
+        randomCrossover = true;
         for (int i = 0; i != 19; i++) {
             long starttime = System.currentTimeMillis();
             doTest("IncreaseRuleSetSize", "Test" + i);
             long endtime = System.currentTimeMillis();
             ruleSetSize += 1;
-            crossOverPoint = ruleSetSize / 2;
             System.out.println("IncreaseRuleSetSize\t" + "Test" + i + "\t" + (((endtime - starttime) / 1000) / 60));
         }
     }
