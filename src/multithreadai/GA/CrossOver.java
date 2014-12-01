@@ -82,6 +82,7 @@ public class CrossOver extends Thread {
         int i = 0;
         while ((i != children.size()) & (childCount < crossoverNumber)){
             newGeneration[childCount] = children.get(i);
+            newGeneration[childCount].setFitnessChanged(true);
             childCount++;
             i++;
         }

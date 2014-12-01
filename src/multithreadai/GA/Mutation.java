@@ -64,6 +64,7 @@ public class Mutation extends Thread {
 
     public synchronized void setMutant(RuleSet mutant, int mutantID) {
         population[mutantID] = mutant;
+        population[mutantID].setFitnessChanged(true);
         mutantCount++;
         notify();
     }
@@ -79,7 +80,7 @@ public class Mutation extends Thread {
             this.mutation = mutation;
             rand = new Random();
             thread = new Thread(this);
-           
+
         }
 
         public void setMutantID(int mutantID) {
@@ -100,7 +101,7 @@ public class Mutation extends Thread {
             int[] gene = mutantRuleSet.getRules()[mutantIndiv].getGene();
             int classfication = mutantRuleSet.getRules()[mutantIndiv].getClassification();
 
-            if (rand.nextDouble() > 0.8) {
+            if (rand.nextDouble() > 0.5) {
                 classfication = changeClassification(classfication);
             } else {
                 gene = changeGene(gene);
@@ -110,7 +111,7 @@ public class Mutation extends Thread {
             mutantRules[mutantIndiv] = new Individual(gene, classfication);
 
             mutantRuleSet.setRules(mutantRules);
-            
+
             Fitness.setFitness(mutantRuleSet);
 
             if (mutantRuleSet.getFitness() > population[mutantID].getFitness()) {
@@ -135,13 +136,19 @@ public class Mutation extends Thread {
 
             int mutantGene = rand.nextInt(gene.length);
 
-            if (rand.nextDouble() >= 0.8) {
+            if (rand.nextDouble() >= 0.9) {
                 gene[mutantGene] = Individual.HASH_SIGN;
             } else {
                 if (gene[mutantGene] == 1) {
                     gene[mutantGene] = 0;
-                } else {
+                } else if (gene[mutantGene] == 0) {
                     gene[mutantGene] = 1;
+                } else {
+                    if (rand.nextDouble() >= 0.5) {
+                        gene[mutantGene] = 1;
+                    } else {
+                        gene[mutantGene] = 0;
+                    }
                 }
             }
 

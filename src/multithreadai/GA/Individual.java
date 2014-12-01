@@ -22,23 +22,18 @@ public class Individual {
         this.classification = classification;
 
     }
-    
+
     public boolean isMatch(Individual data) {
         boolean isMatch = true;
-
+        
         for (int i = 0; i != gene.length; i++) {
             if (this.gene[i] == HASH_SIGN) {
-                //do nothing
+                // Do nothing
             } else if (data.getGene()[i] != this.gene[i]) {
                 isMatch = false;
                 break;
             }
         }
-
-        if ((isMatch) & (data.getClassification() != this.classification)) {
-            isMatch = false;
-        }
-
         return isMatch;
     }
 

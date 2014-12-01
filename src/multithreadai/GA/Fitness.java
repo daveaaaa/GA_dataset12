@@ -28,12 +28,15 @@ public class Fitness extends Thread {
 
     public static int getFitness(RuleSet rs, Individual[] data) {
         int value = 0;
-        
+
         for (Individual dataPoint : data) {
             for (Individual rule : rs.getRules()) {
                 if (rule.isMatch(dataPoint)) {
-                    value++;
+                    if (rule.getClassification() == dataPoint.getClassification()) {
+                        value++;
+                    }
                     break;
+
                 }
             }
         }
@@ -130,16 +133,15 @@ public class Fitness extends Thread {
         private void calculateFitness_trainingData() {
             RuleSet rs = population[ruleSetID];
 
-            if (rs == null){
-                System.out.println("HERE");
-            }
-            
             if (rs.getFitnessChanged()) {
                 int value = 0;
                 for (Individual dataPoint : trainingSet) {
                     for (Individual rule : rs.getRules()) {
                         if (rule.isMatch(dataPoint)) {
-                            value++;
+                            if (rule.getClassification() == dataPoint.getClassification()) {
+                                value++;
+                            
+                            }
                             break;
                         }
                     }
@@ -158,7 +160,10 @@ public class Fitness extends Thread {
             for (Individual rule : rs.getRules()) {
                 for (Individual dataPoint : data) {
                     if (rule.isMatch(dataPoint)) {
-                        value++;
+                        if (rule.getClassification() == dataPoint.getClassification()) {
+                            value++;
+                        }
+                        break;
                     }
                 }
 
