@@ -32,7 +32,7 @@ public class RuleSet {
         this.ruleSet = new Individual[ruleCount];
         int i = 0;
         int ruleSetCount = 0;
-        
+
         while (i != rules.length) {
             int[] newGene = new int[geneLength];
 
@@ -62,6 +62,18 @@ public class RuleSet {
 
     public Individual[] getRules() {
         return ruleSet;
+    }
+
+    public int getWildCardCount() {
+        int wildCardCount = 0;
+        for (Individual rule : ruleSet) {
+            for (int i = 0; i != rule.getGene().length; i++) {
+                if (rule.getGene()[i] == Individual.HASH_SIGN) {
+                    wildCardCount++;
+                }
+            }
+        }
+        return wildCardCount;
     }
 
     public int[] getRulesAsInt() {

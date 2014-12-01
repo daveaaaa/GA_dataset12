@@ -89,11 +89,28 @@ public class Mutation extends Thread {
 
         @Override
         public void run() {
-            createMutant();
+            if (rand.nextDouble() > 0.8) {
+                shuffleMutant();
+            } else {
+                bitMutant();
+            }
 
         }
 
-        private void createMutant() {
+        private void shuffleMutant(){
+            RuleSet mutantRuleSet = population[mutantID].createClone();
+            Individual[] mutantChromosome = new Individual[mutantRuleSet.getRules().length];
+            
+            for(int i = 0; i != mutantRuleSet.getRules().length ; i++){
+                mutantChromosome[i] = mutantRuleSet.getRules()[(mutantRuleSet.getRules().length -1) - i];
+            } 
+            
+            mutantRuleSet.setRules(mutantChromosome);
+            
+            mutation.setMutant(mutantRuleSet, mutantID);
+        }
+        
+        private void bitMutant() {
             RuleSet mutantRuleSet = population[mutantID].createClone();
 
             int mutantIndiv = rand.nextInt(mutantRuleSet.getRules().length);
@@ -113,13 +130,12 @@ public class Mutation extends Thread {
 
             mutantRuleSet.setRules(mutantRules);
 
-            Fitness.setFitness(mutantRuleSet);
-
-            if (mutantRuleSet.getFitness() > population[mutantID].getFitness()) {
-                mutation.setMutant(mutantRuleSet, mutantID);
-            } else {
-                mutation.setMutant(population[mutantID], mutantID);
-            }
+            mutation.setMutant(mutantRuleSet, mutantID);
+//            if (mutantRuleSet.getFitness() > population[mutantID].getFitness()) {
+//                
+//            } else {
+//                mutation.setMutant(population[mutantID], mutantID);
+//            }
 
         }
 
@@ -135,7 +151,7 @@ public class Mutation extends Thread {
 
         private int[] changeGene(int[] gene, int mutantGene) {
 
-            if (rand.nextDouble() >= 0.8) {
+            if (rand.nextDouble() >= 0.9) {
                 gene[mutantGene] = Individual.HASH_SIGN;
             } else {
                 if (gene[mutantGene] == 1) {

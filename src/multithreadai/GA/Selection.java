@@ -67,7 +67,7 @@ public class Selection extends Thread {
 
         private Random rand = new Random();
         private int[] competitors = new int[tournamentSize];
-        private int winner;
+        private int winnerID;
         private Selection selection;
         private Thread thread;
 
@@ -81,7 +81,7 @@ public class Selection extends Thread {
         public void run() {
             getCompetitors();
             findWinner();
-            selection.putWinner(winner);
+            selection.putWinner(winnerID);
         }
 
         private void getCompetitors() {
@@ -92,12 +92,16 @@ public class Selection extends Thread {
 
         private void findWinner() {
             int bestFitness = 0;
-            winner = 0;
+            winnerID = 0;
 
             for (int i = 0; i != competitors.length; i++) {
-                if (rules[competitors[i]].getFitness() >= bestFitness) {
+                if ((rules[competitors[i]].getFitness()== bestFitness) && (winnerID > 0)){
+                    if(rules[winnerID].getWildCardCount() >= rules[competitors[i]].getWildCardCount()){
+                        winnerID = i;
+                    }
+                } else if (rules[competitors[i]].getFitness() >= bestFitness) {
                     bestFitness = rules[competitors[i]].getFitness();
-                    winner = competitors[i];
+                    winnerID = competitors[i];
                 }
             }
         }
