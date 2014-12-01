@@ -99,16 +99,17 @@ public class Mutation extends Thread {
             int mutantIndiv = rand.nextInt(mutantRuleSet.getRules().length);
 
             int[] gene = mutantRuleSet.getRules()[mutantIndiv].getGene();
-            int classfication = mutantRuleSet.getRules()[mutantIndiv].getClassification();
+            int classification = mutantRuleSet.getRules()[mutantIndiv].getClassification();
 
-            if (rand.nextDouble() > 0.7) {
-                classfication = changeClassification(classfication);
+            int mutateGene = rand.nextInt(gene.length + classification);
+            if (mutateGene > gene.length - 1) {
+                classification = changeClassification(classification);
             } else {
-                gene = changeGene(gene);
+                gene = changeGene(gene, mutateGene);
             }
 
             Individual[] mutantRules = mutantRuleSet.getRules();
-            mutantRules[mutantIndiv] = new Individual(gene, classfication);
+            mutantRules[mutantIndiv] = new Individual(gene, classification);
 
             mutantRuleSet.setRules(mutantRules);
 
@@ -132,9 +133,7 @@ public class Mutation extends Thread {
             return classification;
         }
 
-        private int[] changeGene(int[] gene) {
-
-            int mutantGene = rand.nextInt(gene.length);
+        private int[] changeGene(int[] gene, int mutantGene) {
 
             if (rand.nextDouble() >= 0.8) {
                 gene[mutantGene] = Individual.HASH_SIGN;
