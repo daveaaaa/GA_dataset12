@@ -37,8 +37,10 @@ public class Result {
 
         populationSize = ruleSet.length;
 
-        bestRule = getBestRule(ruleSet);
-        countUniqueRules(ruleSet);
+         if ((generation % 50 == 0) & (generation != 0)) {
+            bestRule = getBestRule(ruleSet);
+            countUniqueRules(ruleSet);
+        }
     }
 
     public Result(int generation, RuleSet[] ruleSet) {
