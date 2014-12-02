@@ -51,6 +51,10 @@ public class Fitness extends Thread {
 
         initWorkers(false);
         startWorkers();
+        waitForWorkersToFinish();
+    }
+
+    private void waitForWorkersToFinish() {
 
         while (fitnessCounted != population.length) {
             try {
@@ -69,14 +73,7 @@ public class Fitness extends Thread {
 
         initWorkers(true);
         startWorkers();
-
-        while (fitnessCounted != population.length) {
-            try {
-                this.wait();
-            } catch (InterruptedException iE) {
-                iE.printStackTrace(System.err);
-            }
-        }
+        waitForWorkersToFinish();
     }
 
     private void initWorkers(boolean trainingSet) {
@@ -139,7 +136,7 @@ public class Fitness extends Thread {
                         if (rule.isMatch(dataPoint)) {
                             if (rule.getClassification() == dataPoint.getClassification()) {
                                 value++;
-                            } 
+                            }
                             break;
                         }
                     }

@@ -1,4 +1,4 @@
-package multithreadai.utils; 
+package multithreadai.utils;
 
 import java.util.ArrayList;
 import multithreadai.GA.Fitness;
@@ -30,7 +30,7 @@ public class Result {
 
         Fitness fitness = new Fitness();
         fitness.getFitness_unseenData(ruleSet, data);
-        
+
         for (RuleSet rules : ruleSet) {
             populationFitness += rules.getFitness();
         }
@@ -41,48 +41,45 @@ public class Result {
         countUniqueRules(ruleSet);
     }
 
-     public Result(int generation, RuleSet[] ruleSet) {
+    public Result(int generation, RuleSet[] ruleSet) {
         this.generation = generation;
 
         Fitness fitness = new Fitness();
         fitness.getFitness_trainingData(ruleSet);
-        
+
         for (RuleSet rules : ruleSet) {
             populationFitness += rules.getFitness();
         }
 
         populationSize = ruleSet.length;
 
-       
         bestRule = getBestRule(ruleSet);
         countUniqueRules(ruleSet);
     }
-    
-    private String getBestRule(RuleSet[] ruleSet) {
 
+    private String getBestRule(RuleSet[] ruleSet) {
+        ArrayList<RuleSet> bestRules = new ArrayList<>();
         bestFitness = 0;
         StringBuilder sb = new StringBuilder(300);
-        
+
         for (RuleSet rule : ruleSet) {
             int ruleFitness = rule.getFitness();
 
             if (ruleFitness == bestFitness) {
                 bestRuleCount++;
-                if (!(sb.toString().contains(rule.toString()))) {
-                    sb.append(rule.toString());
-                    sb.append("\t");
-                    uniqueBestRule++;
-                }
+                bestRules.add(rule);
             } else if ((ruleFitness > bestFitness)) {
-                sb.delete(0, sb.length());
-                sb.append(rule.toString());
-                sb.append("\t");
+                bestRules.clear();
+                bestRules.add(rule);
                 bestRuleCount = 1;
                 uniqueBestRule = 1;
                 bestFitness = ruleFitness;
             }
         }
 
+        for (RuleSet rule : bestRules) {
+            sb.append(rule.toString());
+        }
         return sb.toString();
     }
 
@@ -90,16 +87,15 @@ public class Result {
 
         StringBuilder sb = new StringBuilder(300);
 
-        for(int i = 0; i != ruleSet.length; i++){
-            if(!(sb.toString().contains(ruleSet[i].toString()))){
+        for (int i = 0; i != ruleSet.length; i++) {
+            if (!(sb.toString().contains(ruleSet[i].toString()))) {
                 sb.append(ruleSet[i]).toString();
-                uniqueRulesCount ++; 
+                uniqueRulesCount++;
             }
         }
         uniqueRules = sb.toString();
 
     }
-
 
     public static String fullInfoHeader() {
         StringBuilder sb = new StringBuilder(120);

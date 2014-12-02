@@ -22,25 +22,40 @@ public class CrossOver extends Thread {
     private boolean randomCrossover;
     private double crossoverPercentage;
     private int crossoverNumber;
+    private Random rand;
 
     public CrossOver(int crossOverPoint, boolean randomCrossover, double crossoverPercentage) {
         this.crossOverPoint = crossOverPoint;
         this.randomCrossover = randomCrossover;
         this.crossoverPercentage = crossoverPercentage;
+        this.rand = new Random();
     }
 
     public synchronized RuleSet[] doCrossOver(RuleSet[] population) {
-        Random rand = new Random();
         childCount = 0;
         this.population = population;
-
-        crossoverNumber = (int) ((double) population.length * crossoverPercentage);
-
         newGeneration = new RuleSet[population.length];
 
-        initCrossoverWorkers(crossoverNumber, population[0].getRules().length);
-        getChildren();
+        getNumberForCrossover();
+        initCrossoverWorkers(population[0].getRules().length);
+        crossoverWorkersDoWork();
+        waitForWorkersToFinish();
+        addUncrossoveredPopulation();
 
+        return newGeneration;
+    }
+
+    private void getNumberForCrossover() {
+        crossoverNumber = (int) ((double) population.length * crossoverPercentage);
+    }
+
+    private void addUncrossoveredPopulation() {
+        for (int i = crossoverNumber; i != population.length; i++) {
+            newGeneration[i] = population[rand.nextInt(population.length)].createClone();
+        }
+    }
+
+    private void waitForWorkersToFinish() {
         while (childCount != crossoverNumber) {
             try {
                 wait();
@@ -48,19 +63,13 @@ public class CrossOver extends Thread {
                 iE.printStackTrace(System.err);
             }
         }
-
-        for (int i = crossoverNumber; i != population.length; i++) {
-            newGeneration[i] = population[rand.nextInt(population.length)].createClone();
-        }
-
-        return newGeneration;
     }
 
-    private void initCrossoverWorkers(int size, int geneSize) {
+    private void initCrossoverWorkers(int geneSize) {
         Random rand = new Random();
-        crossoverWorkers = new CrossOverWorker[size];
+        crossoverWorkers = new CrossOverWorker[crossoverNumber];
 
-        for (int i = 0; i != size; i++) {
+        for (int i = 0; i != crossoverNumber; i++) {
             if (randomCrossover) {
                 int randomCrossoverPoint = rand.nextInt(population[0].getRulesAsInt().length);
                 crossoverWorkers[i] = new CrossOverWorker(this, randomCrossoverPoint);
@@ -71,13 +80,17 @@ public class CrossOver extends Thread {
         }
     }
 
-    private void getChildren() {
+    private void crossoverWorkersDoWork() {
         for (int i = 0; i != crossoverWorkers.length; i++) {
             crossoverWorkers[i].start();
         }
     }
 
-    public synchronized void addChildren(ArrayList<RuleSet> children) {
+    private synchronized int getRandomInt(int bound) {
+        return rand.nextInt(bound);
+    }
+
+    private synchronized void addChildren(ArrayList<RuleSet> children) {
         int i = 0;
         while ((i != children.size()) & (childCount < crossoverNumber)) {
             newGeneration[childCount] = children.get(i);
@@ -90,7 +103,6 @@ public class CrossOver extends Thread {
 
     private class CrossOverWorker extends Thread {
 
-        private Random rand = new Random();
         private Thread thread;
         private CrossOver crossOver;
         private ArrayList<RuleSet> children;
@@ -110,8 +122,8 @@ public class CrossOver extends Thread {
         }
 
         private void createChildren() {
-            RuleSet parent1 = population[rand.nextInt(population.length)];
-            RuleSet parent2 = population[rand.nextInt(population.length)];
+            RuleSet parent1 = population[crossOver.getRandomInt(population.length)];
+            RuleSet parent2 = population[crossOver.getRandomInt(population.length)];
 
             getChildren(parent1, parent2);
         }
@@ -133,8 +145,8 @@ public class CrossOver extends Thread {
                 child2Gene[i] = parent1Gene[i];
             }
 
-            RuleSet child1 = new RuleSet(child1Gene, parent1.getRules()[0].getGene().length, parent1.getRules().length);
-            RuleSet child2 = new RuleSet(child2Gene, parent1.getRules()[0].getGene().length, parent1.getRules().length);
+            RuleSet child1 = new RuleSet(child1Gene, parent1.getRules()[0].getChromosome().length, parent1.getRules().length);
+            RuleSet child2 = new RuleSet(child2Gene, parent1.getRules()[0].getChromosome().length, parent1.getRules().length);
 
             children.add(child1);
             children.add(child2);

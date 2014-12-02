@@ -29,23 +29,21 @@ public class Mutation extends Thread {
 
         this.population = population;
 
+        getMutantsIDs();
+        
+        initMutationWorker();
+        runMutationWorker();
+        waitForMutationWorkersToFinish();
+
+        return population;
+    }
+
+    private void getMutantsIDs() {
         for (int i = 0; i != population.length; i++) {
             if (mutationRate >= rand.nextDouble()) {
                 mutantsID.add(i);
             }
         }
-
-        initMutationWorker();
-        runMutationWorker();
-        while (mutantCount != mutantsID.size()) {
-            try {
-                this.wait();
-            } catch (InterruptedException iE) {
-                iE.printStackTrace(System.err);
-            }
-        }
-
-        return population;
     }
 
     private void initMutationWorker() {
@@ -62,23 +60,41 @@ public class Mutation extends Thread {
         }
     }
 
+    private void waitForMutationWorkersToFinish() {
+        while (mutantCount != mutantsID.size()) {
+            try {
+                this.wait();
+            } catch (InterruptedException iE) {
+                iE.printStackTrace(System.err);
+            }
+        }
+    }
+
     public synchronized void setMutant(RuleSet mutant, int mutantID) {
         population[mutantID] = mutant;
         population[mutantID].setFitnessChanged(true);
         mutantCount++;
         notify();
+
+    }
+
+    private synchronized int getRandomInt(int bound) {
+        return rand.nextInt(bound);
+    }
+
+    private synchronized double getRandomDouble() {
+        return rand.nextDouble();
     }
 
     private class MutationWorker extends Thread {
 
+        private final static int CLASSIFICATION_BIT_SIZE = 1;
         private Thread thread;
         private int mutantID;
         private Mutation mutation;
-        private Random rand;
 
         public MutationWorker(Mutation mutation) {
             this.mutation = mutation;
-            rand = new Random();
             thread = new Thread(this);
 
         }
@@ -89,40 +105,42 @@ public class Mutation extends Thread {
 
         @Override
         public void run() {
-            if (rand.nextDouble() > 0.8) {
-                shuffleMutant();
+            if (mutation.getRandomDouble() > 0.8) {
+                reverseMutant();
             } else {
                 bitMutant();
             }
 
         }
 
-        private void shuffleMutant(){
+        private void reverseMutant() {
             RuleSet mutantRuleSet = population[mutantID].createClone();
             Individual[] mutantChromosome = new Individual[mutantRuleSet.getRules().length];
-            
-            for(int i = 0; i != mutantRuleSet.getRules().length ; i++){
-                mutantChromosome[i] = mutantRuleSet.getRules()[(mutantRuleSet.getRules().length -1) - i];
-            } 
-            
+
+            for (int i = 0; i != mutantRuleSet.getRules().length; i++) {
+                mutantChromosome[i] = mutantRuleSet.getRules()[(mutantRuleSet.getRules().length - 1) - i];
+            }
+
             mutantRuleSet.setRules(mutantChromosome);
-            
+
             mutation.setMutant(mutantRuleSet, mutantID);
         }
-        
+
         private void bitMutant() {
+
             RuleSet mutantRuleSet = population[mutantID].createClone();
 
-            int mutantIndiv = rand.nextInt(mutantRuleSet.getRules().length);
+            int mutantIndiv = mutation.getRandomInt(mutantRuleSet.getRules().length);
 
-            int[] gene = mutantRuleSet.getRules()[mutantIndiv].getGene();
+            int[] gene = mutantRuleSet.getRules()[mutantIndiv].getChromosome();
             int classification = mutantRuleSet.getRules()[mutantIndiv].getClassification();
 
-            int mutateGene = rand.nextInt(gene.length + classification);
-            if (mutateGene > gene.length - 1) {
+            int mutateGeneID = mutation.getRandomInt(gene.length + CLASSIFICATION_BIT_SIZE);
+
+            if (mutateGeneID > gene.length - 1) {
                 classification = changeClassification(classification);
             } else {
-                gene = changeGene(gene, mutateGene);
+                gene = changeGene(gene, mutateGeneID);
             }
 
             Individual[] mutantRules = mutantRuleSet.getRules();
@@ -131,11 +149,6 @@ public class Mutation extends Thread {
             mutantRuleSet.setRules(mutantRules);
 
             mutation.setMutant(mutantRuleSet, mutantID);
-//            if (mutantRuleSet.getFitness() > population[mutantID].getFitness()) {
-//                
-//            } else {
-//                mutation.setMutant(population[mutantID], mutantID);
-//            }
 
         }
 
@@ -151,7 +164,7 @@ public class Mutation extends Thread {
 
         private int[] changeGene(int[] gene, int mutantGene) {
 
-            if (rand.nextDouble() >= 0.9) {
+            if (mutation.getRandomDouble() >= 0.9) {
                 gene[mutantGene] = Individual.HASH_SIGN;
             } else {
                 if (gene[mutantGene] == 1) {
@@ -159,7 +172,7 @@ public class Mutation extends Thread {
                 } else if (gene[mutantGene] == 0) {
                     gene[mutantGene] = 1;
                 } else {
-                    if (rand.nextDouble() >= 0.5) {
+                    if (mutation.getRandomDouble() >= 0.5) {
                         gene[mutantGene] = 1;
                     } else {
                         gene[mutantGene] = 0;

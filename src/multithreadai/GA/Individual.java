@@ -10,15 +10,15 @@ public class Individual {
 
     public final static int HASH_SIGN = -1;
 
-    private int[] gene;
+    private int[] chromosome;
     private int classification;
 
     public Individual() {
 
     }
 
-    public Individual(int[] gene, int classification) {
-        this.gene = gene;
+    public Individual(int[] chromosome, int classification) {
+        this.chromosome = chromosome;
         this.classification = classification;
 
     }
@@ -26,10 +26,10 @@ public class Individual {
     public boolean isMatch(Individual data) {
         boolean isMatch = true;
         
-        for (int i = 0; i != gene.length; i++) {
-            if (this.gene[i] == HASH_SIGN) {
+        for (int i = 0; i != chromosome.length; i++) {
+            if (this.chromosome[i] == HASH_SIGN) {
                 // Do nothing
-            } else if (data.getGene()[i] != this.gene[i]) {
+            } else if (data.getChromosome()[i] != this.chromosome[i]) {
                 isMatch = false;
                 break;
             }
@@ -41,12 +41,12 @@ public class Individual {
         return classification;
     }
 
-    public int[] getGene() {
-        return gene;
+    public int[] getChromosome() {
+        return chromosome;
     }
 
-    public void setGene(int[] gene) {
-        this.gene = gene;
+    public void setChromosome(int[] chromosome) {
+        this.chromosome = chromosome;
     }
 
     public void setClassification(int classification) {
@@ -54,10 +54,10 @@ public class Individual {
     }
 
     public Individual createClone() {
-        int[] cloneGene = new int[gene.length];
+        int[] cloneGene = new int[chromosome.length];
         int cloneClassification = classification;
-        for (int i = 0; i != gene.length; i++) {
-            cloneGene[i] = gene[i];
+        for (int i = 0; i != chromosome.length; i++) {
+            cloneGene[i] = chromosome[i];
         }
 
         return new Individual(cloneGene, cloneClassification);
@@ -65,12 +65,12 @@ public class Individual {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(gene.length + 2);
-        for (int i = 0; i != gene.length; i++) {
-            if (gene[i] == HASH_SIGN) {
+        StringBuilder sb = new StringBuilder(chromosome.length + 2);
+        for (int i = 0; i != chromosome.length; i++) {
+            if (chromosome[i] == HASH_SIGN) {
                 sb.append("#");
             } else {
-                sb.append(gene[i]);
+                sb.append(chromosome[i]);
             }
         }
 

@@ -161,7 +161,7 @@ public class MultiThreadAI {
 
         System.out.println("Run: \t Time: \tUnseen Fitness:");
         for (int run = 0; run != maxRuns; run++) {
-            GA alg = new GA(competitorSize, mutationRate, crossOverPoint, populationSize, ruleSetSize, trainingSet[0].getGene().length, crossoverPercentage, randomCrossover);
+            GA alg = new GA(competitorSize, mutationRate, crossOverPoint, populationSize, ruleSetSize, trainingSet[0].getChromosome().length, crossoverPercentage, randomCrossover);
 
             long starttime = System.currentTimeMillis();
             int intiUnseenFitness = alg.getFitness(unseenSet);

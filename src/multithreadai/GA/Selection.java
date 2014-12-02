@@ -7,7 +7,6 @@ package multithreadai.GA;
 
 import java.util.Random;
 
-
 /**
  *
  * @author David Armstrong
@@ -19,20 +18,34 @@ public class Selection extends Thread {
     private RuleSet[] winners;
     private int tournamentSize;
     private int winnerCount;
+    private Random rand;
 
     public Selection(int tournamentSize) {
         this.tournamentSize = tournamentSize;
+        rand = new Random();
     }
 
     public synchronized RuleSet[] doSelection(RuleSet[] rules) {
         winnerCount = 0;
-        
-        initTournament(rules.length);
-        
         this.rules = rules;
         winners = new RuleSet[rules.length];
 
-        getWinners();
+        initTournament();
+        selectionWorkersGetWinner();
+        waitForWorkersToFinish();
+
+        return winners;
+    }
+
+    private void initTournament() {
+        tournament = new SelectionWorker[rules.length];
+
+        for (int i = 0; i != rules.length; i++) {
+            tournament[i] = new SelectionWorker(this);
+        }
+    }
+
+    private void waitForWorkersToFinish() {
         while (winnerCount != rules.length) {
             try {
                 this.wait();
@@ -40,21 +53,16 @@ public class Selection extends Thread {
                 iE.printStackTrace(System.err);
             }
         }
-        return winners;
     }
 
-    private void initTournament(int size) {
-        tournament = new SelectionWorker[size];
-
-        for (int i = 0; i != size; i++) {
-            tournament[i] = new SelectionWorker(this);
-        }
-    }
-
-    private void getWinners() {
+    private void selectionWorkersGetWinner() {
         for (int i = 0; i != tournament.length; i++) {
             tournament[i].start();
         }
+    }
+
+    private synchronized int getRandomInt(int bound) {
+        return rand.nextInt(bound);
     }
 
     public synchronized void putWinner(int winnerPosition) {
@@ -65,7 +73,6 @@ public class Selection extends Thread {
 
     private class SelectionWorker extends Thread {
 
-        private Random rand = new Random();
         private int[] competitors = new int[tournamentSize];
         private int winnerID;
         private Selection selection;
@@ -86,7 +93,7 @@ public class Selection extends Thread {
 
         private void getCompetitors() {
             for (int i = 0; i != tournamentSize; i++) {
-                competitors[i] = rand.nextInt(rules.length);
+                competitors[i] = selection.getRandomInt(rules.length);
             }
         }
 
@@ -95,7 +102,7 @@ public class Selection extends Thread {
             winnerID = 0;
 
             for (int i = 0; i != competitors.length; i++) {
-                if ((rules[competitors[i]].getFitness()== bestFitness) && (winnerID > 0)){
+                if ((rules[competitors[i]].getFitness() == bestFitness) && (winnerID > 0)) {
 //                    if(rules[winnerID].getWildCardCount() >= rules[competitors[i]].getWildCardCount()){
 //                        winnerID = i;
 //                    }

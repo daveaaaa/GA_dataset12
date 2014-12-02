@@ -67,8 +67,8 @@ public class RuleSet {
     public int getWildCardCount() {
         int wildCardCount = 0;
         for (Individual rule : ruleSet) {
-            for (int i = 0; i != rule.getGene().length; i++) {
-                if (rule.getGene()[i] == Individual.HASH_SIGN) {
+            for (int i = 0; i != rule.getChromosome().length; i++) {
+                if (rule.getChromosome()[i] == Individual.HASH_SIGN) {
                     wildCardCount++;
                 }
             }
@@ -78,12 +78,12 @@ public class RuleSet {
 
     public int[] getRulesAsInt() {
 
-        int[] rules = new int[ruleSet.length + (ruleSet.length * ruleSet[0].getGene().length)];
+        int[] rules = new int[ruleSet.length + (ruleSet.length * ruleSet[0].getChromosome().length)];
 
         int i = 0;
         for (Individual rule : ruleSet) {
-            for (int j = 0; j != rule.getGene().length; j++) {
-                rules[i] = rule.getGene()[j];
+            for (int j = 0; j != rule.getChromosome().length; j++) {
+                rules[i] = rule.getChromosome()[j];
                 i++;
             }
             rules[i] = rule.getClassification();
@@ -96,12 +96,12 @@ public class RuleSet {
     public void setRulesAsInt(int[] rules) {
         int i = 0;
         for (Individual rule : ruleSet) {
-            int[] newGene = new int[rule.getGene().length];
-            for (int j = 0; j != rule.getGene().length; j++) {
+            int[] newGene = new int[rule.getChromosome().length];
+            for (int j = 0; j != rule.getChromosome().length; j++) {
                 newGene[j] = rules[i];
                 i++;
             }
-            rule.setGene(newGene);
+            rule.setChromosome(newGene);
             rule.setClassification(rules[i]);
             i++;
         }
@@ -161,7 +161,7 @@ public class RuleSet {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(ruleSet.length * ruleSet[0].getGene().length);
+        StringBuilder sb = new StringBuilder(ruleSet.length * ruleSet[0].getChromosome().length);
 
         for (Individual rule : ruleSet) {
             sb.append(rule.toString());
