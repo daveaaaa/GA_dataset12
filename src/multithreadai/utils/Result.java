@@ -37,7 +37,7 @@ public class Result {
 
         populationSize = ruleSet.length;
 
-         if ((generation % 50 == 0) & (generation != 0)) {
+        if ((generation % 500 == 0) & (generation != 0)) {
             bestRule = getBestRule(ruleSet);
             countUniqueRules(ruleSet);
         }
@@ -166,7 +166,9 @@ public class Result {
         sb.append(uniqueBestRule);
         sb.append("\t");
         sb.append(bestFitness);
-
+        if ((generation % 500 == 0) & (generation != 0)) {
+            sb.append(bestRule);
+        }
         return sb.toString();
     }
 

@@ -1,0 +1,29 @@
+DataSet:	data2
+Mutation Rate:	0.3
+Training Set Percent 	80.0%
+Generation: 	2000
+RuleSet Size:	2
+Population Size:	200
+Competitor Size:	2
+
+Run:	 Initial Fitness:	 Final Fitness: 	
+0	.00	51.46
+1	.00	51.95
+2	.24	51.95
+3	.49	51.95
+4	.00	51.95
+5	.00	51.95
+6	.73	51.46
+7	.00	51.95
+8	.49	51.46
+9	.00	51.46
+10	.00	51.95
+11	.49	51.95
+12	.00	51.95
+13	.00	51.95
+14	.98	51.95
+15	.49	51.95
+16	.00	51.46
+17	.24	51.46
+18	.00	51.95
+19	.00	51.46

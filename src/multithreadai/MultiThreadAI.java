@@ -12,8 +12,6 @@ import multithreadai.utils.HeaderResults;
 import multithreadai.utils.FileWriter;
 import multithreadai.utils.FileReader;
 import multithreadai.utils.Result;
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  *
@@ -41,16 +39,15 @@ public class MultiThreadAI {
      */
     public static void main(String[] args) {
         trainingSetPercent = 0.8;
-        dataFile = "data2";
-        FileReader.generateDataSets(trainingSetPercent, dataFile);
+//        dataFile = "data1";
+//        FileReader.generateDataSets(trainingSetPercent, dataFile);
 
-        initVariables();
-        increaseRuleSet();
-
+//        initVariables();
+//        increaseRuleSet();
 //        initVariables();
 //        increaseCompetitorSize();
-//        initVariables();
-//        increasePop();
+ //       initVariables();
+ //       increasePop();
 //        initVariables();
 //        increaseMutationRate();
 //        initVariables();
@@ -58,13 +55,14 @@ public class MultiThreadAI {
 //        initVariables();
 //        increaseCrossover();
 //        trainingSetPercent = 0.8;
-//        dataFile = "data2";
-//        FileReader.generateDataSets(trainingSetPercent, dataFile);
+        dataFile = "data2";
+        FileReader.generateDataSets(trainingSetPercent, dataFile);
 //
-//        initVariables();
+        initVariables();
+                increaseRuleSet();
 //        increaseCompetitorSize();
 //        initVariables();
-//        increasePop();
+//       increasePop();
 //        initVariables();
 //        increaseMutationRate();
 //        initVariables();
@@ -80,30 +78,30 @@ public class MultiThreadAI {
         //crossOverPoint = trainingSet[0].getGene().length / 2;
         randomCrossover = true;
         competitorSize = 2;
-        maxGenerations = 1000;
+        maxGenerations = 2000;
         ruleSetSize = 20;
-        crossoverPercentage = 0.7;
+        crossoverPercentage = 0.8;
         maxRuns = 20;
     }
 
     private static void increasePop() {
-        populationSize = 10;
+        populationSize = 100;
         for (int i = 0; i != 4; i++) {
             long starttime = System.currentTimeMillis();
             doTest("IncreasePop", "Test" + i);
             long endtime = System.currentTimeMillis();
-            populationSize += 5;
+            populationSize += 20;
             System.out.println("IncreasePop\t" + "Test" + i + "\t" + (((endtime - starttime) / 1000) / 60));
         }
     }
 
     private static void increaseRuleSet() {
-        ruleSetSize = 20;
-        for (int i = 0; i != 19; i++) {
+        ruleSetSize = 8;
+        for (int i = 0; i != 4; i++) {
             long starttime = System.currentTimeMillis();
             doTest("IncreaseRuleSetSize", "Test" + i);
             long endtime = System.currentTimeMillis();
-            ruleSetSize += 1;
+            ruleSetSize += 2;
             System.out.println("IncreaseRuleSetSize\t" + "Test" + i + "\t" + (((endtime - starttime) / 1000) / 60));
         }
     }
@@ -130,8 +128,9 @@ public class MultiThreadAI {
     }
 
     private static void increaseMutationRate() {
+        mutationRate = 0.0;
         System.out.println("Increase Mutation Rate");
-        for (int i = 0; i != 4; i++) {
+        for (int i = 0; i != 7; i++) {
             doTest("IncreaseMutationRate", "Test" + i);
             mutationRate += 0.1;
         }

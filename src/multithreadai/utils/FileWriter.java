@@ -53,7 +53,6 @@ public class FileWriter {
             for (Result result : results) {
                 writer.append(result.shortInfo());
                 writer.append("\t");
-                writer.append(result.bestRule());
                 writer.append("\n");
             }
             writer.append("\n");
